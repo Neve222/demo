@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+    <classPathEntry
+            location="${pgsql-drive}/.m2/repository/org/postgresql/postgresql/42.2.2/postgresql-42.2.2.jar"/>
+
+
+    <context id="dao" targetRuntime="MyBatis3">
+        <annotationConfig id="aes" annotationPackage="com.datatrees.commons.annotation.Encrypted"
+                          annotationValue="@Encrypted"/>
+        <annotationConfig id="rsa" annotationPackage="com.datatrees.commons.annotation.Encrypted"
+                          annotationValue="@Encrypted(value = CryptAlgorithm.RSA)">
+            <property name="package" value="com.datatrees.common.security.client.util.CryptAlgorithm"/>
+            <!-- 逗号分割依赖import -->
+        </annotationConfig>
+
+        <plugin type="org.mybatis.generator.plugins.RenameExampleClassPlugin">
+            <property name="searchString" value="Example$"/>
+            <property name="replaceString" value="Criteria"/>
+        </plugin>
+
+        <plugin type="org.mybatis.generator.plugins.RowBoundsPlugin"/>
+        <plugin type="org.mybatis.generator.plugins.ToStringPlugin"/>
+        <plugin type="org.mybatis.generator.plugins.SerializablePlugin"/>
+        <!--<plugin type="org.mybatis.generator.plugins.CachePlugin"> -->
+        <!--<property name="enableSubPackages" value="true"/> -->
+        <!--</plugin> -->
+
+
+        <!--<jdbcConnection driverClass="org.postgresql.Driver"-->
+        <!--connectionURL="jdbc:postgresql://172.17.100.35:5432/credit"-->
+        <!--userId="zhangxiao" password="123456">-->
+        <!--</jdbcConnection>-->
+        <jdbcConnection driverClass="org.postgresql.Driver"
+                        connectionURL="jdbc:postgresql://192.168.5.162:5432/credit"
+                        userId="postgres" password="postgres">
+        </jdbcConnection>
+
+        <!-- NOTE: When targetProject is set to "MAVEN", the default output is target/generated-sources/mybatis-generator -->
+
+        <javaModelGenerator targetPackage="com.mmn.domain"
+                            targetProject="src/main/java"><!-- src/generated/java -->
+            <property name="enableSubPackages" value="false"/>
+            <property name="trimStrings" value="true"/>
+        </javaModelGenerator>
+
+        <sqlMapGenerator targetPackage="sqlmap"
+                         targetProject="src/main/resources"> <!-- src/generated/resources -->
+            <property name="enableSubPackages" value="false"/>
+        </sqlMapGenerator>
+
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.mmn.mapper"
+                             targetProject="src/main/java"> <!-- src/generated/java -->
+            <property name="enableSubPackages" value="false"/>
+        </javaClientGenerator>
+
+
+        <table schema="report" catalog="credit" tableName="kpi_quarter" domainObjectName="test1111">
+            <property name="useActualColumnNames" value="true" />
+        </table>
+
+    </context>
+</generatorConfiguration>
