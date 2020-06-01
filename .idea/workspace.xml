@@ -19,20 +19,10 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c7fb9a5a-88b0-4fed-a5a8-77ea1c69b685" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/smartfox_info.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/mmn/map/ConcurrentHashMapDebug.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/mmn/map/ConcurrentHashMapDebugDemo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/autogen/generatorConfig-report.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/autogen/generatorConfig_report.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_postgresql_postgresql_42_2_2.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/demo.iml" beforeDir="false" afterPath="$PROJECT_DIR$/demo.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+    <list default="true" id="c7fb9a5a-88b0-4fed-a5a8-77ea1c69b685" name="Default Changelist" comment="ConcurrentHashMapDebug">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/mmn/map/ConcurrentHashMapDebug.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/mmn/map/ConcurrentHashMapDebug.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/mmn/map/ConcurrentHashMapDebugDemo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/mmn/map/ConcurrentHashMapDebugDemo.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -61,13 +51,30 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="project.structure.last.edited" value="Problems" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
   </component>
   <component name="RecentsManager">
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="com.mmn.map" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Application.ConcurrentHashMapDebugDemo">
+    <configuration name="App" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.mmn.App" />
+      <module name="demo" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.mmn.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="ConcurrentHashMapDebugDemo" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.mmn.map.ConcurrentHashMapDebugDemo" />
       <module name="demo" />
@@ -84,6 +91,7 @@
     <recent_temporary>
       <list>
         <item itemvalue="Application.ConcurrentHashMapDebugDemo" />
+        <item itemvalue="Application.App" />
       </list>
     </recent_temporary>
   </component>
@@ -98,8 +106,16 @@
       <option name="presentableId" value="Default" />
       <updated>1590998633138</updated>
       <workItem from="1590998634466" duration="2316000" />
-      <workItem from="1591004732872" duration="5415000" />
+      <workItem from="1591004732872" duration="13645000" />
     </task>
+    <task id="LOCAL-00001" summary="ConcurrentHashMapDebug">
+      <created>1591017971504</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1591017971504</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -117,16 +133,29 @@
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="ConcurrentHashMapDebug" />
+    <option name="LAST_COMMIT_MESSAGE" value="ConcurrentHashMapDebug" />
+  </component>
   <component name="WindowStateProjectService">
-    <state x="533" y="163" key="#com.intellij.ide.util.MemberChooser" timestamp="1591008223595">
+    <state x="533" y="163" key="#com.intellij.ide.util.MemberChooser" timestamp="1591031002503">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
     <state x="533" y="163" key="#com.intellij.ide.util.MemberChooser/0.0.1440.900/-244.-1057.1920.1057@0.0.1440.900" timestamp="1591008223595" />
     <state x="533" y="163" key="#com.intellij.ide.util.MemberChooser/0.0.1440.900/-244.-1080.1920.1080@0.0.1440.900" timestamp="1591007084495" />
+    <state x="533" y="163" key="#com.intellij.ide.util.MemberChooser/0.0.1440.900@0.0.1440.900" timestamp="1591031002503" />
     <state x="458" y="204" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1591005915072">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
     <state x="458" y="204" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1440.900/-244.-1080.1920.1080@0.0.1440.900" timestamp="1591005915072" />
+    <state x="221" y="63" key="SettingsEditor" timestamp="1591018999604">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state x="221" y="63" key="SettingsEditor/0.0.1440.900@0.0.1440.900" timestamp="1591018999604" />
+    <state x="320" y="190" key="Vcs.Push.Dialog.v2" timestamp="1591017979591">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state x="320" y="190" key="Vcs.Push.Dialog.v2/0.0.1440.900@0.0.1440.900" timestamp="1591017979591" />
     <state x="385" y="196" key="search.everywhere.popup" timestamp="1591006138040">
       <screen x="0" y="0" width="1440" height="900" />
     </state>

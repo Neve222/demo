@@ -6,5 +6,7 @@ public class ConcurrentHashMapDebugDemo {
 //        ConcurrentHashMapDebug hashMap = new ConcurrentHashMapDebug();
 //        hashMap.put(1, 2);
 //        System.out.println(1);
+
+        System.out.println(16 + (16 >>> 1) + 1);
     }
 }

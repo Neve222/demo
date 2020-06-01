@@ -72,7 +72,7 @@ public class ConcurrentHashMapDebug<K, V> extends AbstractMap<K, V>
      * because the top two bits of 32bit hash fields are used for
      * control purposes.
      */
-    private static final int MAXIMUM_CAPACITY = 1 << 30;
+    private static final int MAXIMUM_CAPACITY = 1 << 30;// 2的30次方=1073741824
 
     /**
      * The default initial table capacity.  Must be a power of 2
@@ -145,7 +145,7 @@ public class ConcurrentHashMapDebug<K, V> extends AbstractMap<K, V>
      * The maximum number of threads that can help resize.
      * Must fit in 32 - RESIZE_STAMP_BITS bits.
      */
-    private static final int MAX_RESIZERS = (1 << (32 - RESIZE_STAMP_BITS)) - 1;
+    private static final int MAX_RESIZERS = (1 << (32 - RESIZE_STAMP_BITS)) - 1;// 2^15-1，help resize的最大线程数
 
     /**
      * The bit shift for recording size stamp in sizeCtl.
@@ -270,6 +270,11 @@ public class ConcurrentHashMapDebug<K, V> extends AbstractMap<K, V>
      * Returns a power of two table size for the given desired capacity.
      * See Hackers Delight, sec 3.2
      */
+    /**
+     * 返回一个大于输入参数且最小的为2的n次幂的数。
+     * @param c
+     * @return
+     */
     private static final int tableSizeFor(int c) {
         int n = c - 1;
         n |= n >>> 1;
@@ -376,6 +381,13 @@ public class ConcurrentHashMapDebug<K, V> extends AbstractMap<K, V>
      * creation, or 0 for default. After initialization, holds the
      * next element count value upon which to resize the table.
      */
+    /**
+     * 各阶段作用不同
+     * (1)、新建而未初始化时 用于记录初始容量大小，仅用于记录集合在实际创建时应该使用的大小的作用
+     * (2)、初始化过程中   =-1表示集合正在初始化 initTable()
+     * (3)、初始化完成后   触发集合扩容的极限值0.75init. initTable()
+     * (4)、正在扩容时
+     */
     private transient volatile int sizeCtl;
 
     /**
@@ -432,6 +444,7 @@ public class ConcurrentHashMapDebug<K, V> extends AbstractMap<K, V>
      * @param m the map
      */
     public ConcurrentHashMapDebug(Map<? extends K, ? extends V> m) {
+//        先设定sizeCtl为默认容量，再添加元素
         this.sizeCtl = DEFAULT_CAPACITY;
         putAll(m);
     }
@@ -598,6 +611,7 @@ public class ConcurrentHashMapDebug<K, V> extends AbstractMap<K, V>
         if (key == null || value == null) throw new NullPointerException();
         //根据key算出hash值
         int hash = spread(key.hashCode());
+        //binCount用来计算在这个节点总共有多少个元素，用来控制扩容或者转移为树
         int binCount = 0;
         for (Node<K, V>[] tab = table; ; ) {
             Node<K, V> f;
@@ -605,10 +619,15 @@ public class ConcurrentHashMapDebug<K, V> extends AbstractMap<K, V>
             if (tab == null || (n = tab.length) == 0)
                 tab = initTable();
             else if ((f = tabAt(tab, i = (n - 1) & hash)) == null) {
+                //f即为当前key定位出的Node，如果为空表示当前位置可以写入数据，利用CAS尝试写入，失败则自旋保证成功
                 if (casTabAt(tab, i, null,
-                        new Node<K, V>(hash, key, value, null)))
+                        new Node<K, V>(hash, key, value, null)))//创建一个Node添加到数组中区，null表示的是下一个节点为空
                     break;                   // no lock when adding to empty bin
             } else if ((fh = f.hash) == MOVED)
+                /*
+                 * 如果检测到某个节点的hash值是MOVED，则表示正在进行数组扩张的数据复制阶段，
+                 * 则当前线程也会参与去复制，通过允许多线程复制的功能，一次来减少数组的复制所带来的性能损失
+                 */
                 tab = helpTransfer(tab, f);
             else {
                 V oldVal = null;
@@ -621,19 +640,21 @@ public class ConcurrentHashMapDebug<K, V> extends AbstractMap<K, V>
                                 if (e.hash == hash &&
                                         ((ek = e.key) == key ||
                                                 (ek != null && key.equals(ek)))) {
+                                    //要存的元素的hash，key跟要存储的位置的节点的相同的时候，替换掉该节点的value即可
                                     oldVal = e.val;
                                     if (!onlyIfAbsent)
                                         e.val = value;
                                     break;
                                 }
                                 Node<K, V> pred = e;
-                                if ((e = e.next) == null) {
+                                if ((e = e.next) == null) {//判断该节点的下一个节点是否为空，
+                                    //为空的话把这个要加入的节点设置为当前节点的下一个节点
                                     pred.next = new Node<K, V>(hash, key,
                                             value, null);
                                     break;
                                 }
                             }
-                        } else if (f instanceof TreeBin) {
+                        } else if (f instanceof TreeBin) {//已经转化成红黑树类型了
                             Node<K, V> p;
                             binCount = 2;
                             if ((p = ((TreeBin<K, V>) f).putTreeVal(hash, key,
@@ -646,7 +667,7 @@ public class ConcurrentHashMapDebug<K, V> extends AbstractMap<K, V>
                     }
                 }
                 if (binCount != 0) {
-                    if (binCount >= TREEIFY_THRESHOLD)
+                    if (binCount >= TREEIFY_THRESHOLD)//当在同一个节点的数目达到8个的时候，则扩张数组或将给节点的数据转为tree(里面的判断64)
                         treeifyBin(tab, i);
                     if (oldVal != null)
                         return oldVal;
@@ -1362,6 +1383,71 @@ public class ConcurrentHashMapDebug<K, V> extends AbstractMap<K, V>
         }
     }
 
+    // ConcurrentHashMap-only methods
+
+    /**
+     * Returns the number of mappings. This method should be used
+     * instead of {@link #size} because a ConcurrentHashMap may
+     * contain more mappings than can be represented as an int. The
+     * value returned is an estimate; the actual count may differ if
+     * there are concurrent insertions or removals.
+     *
+     * @return the number of mappings
+     * @since 1.8
+     */
+    public long mappingCount() {
+        long n = sumCount();
+        return (n < 0L) ? 0L : n; // ignore transient negative values
+    }
+
+    /**
+     * Creates a new {@link Set} backed by a ConcurrentHashMap
+     * from the given type to {@code Boolean.TRUE}.
+     *
+     * @param <K> the element type of the returned set
+     * @return the new set
+     * @since 1.8
+     */
+    public static <K> KeySetView<K,Boolean> newKeySet() {
+        return new KeySetView<K,Boolean>
+                (new ConcurrentHashMapDebug<K,Boolean>(), Boolean.TRUE);
+    }
+
+    /**
+     * Creates a new {@link Set} backed by a ConcurrentHashMap
+     * from the given type to {@code Boolean.TRUE}.
+     *
+     * @param initialCapacity The implementation performs internal
+     * sizing to accommodate this many elements.
+     * @param <K> the element type of the returned set
+     * @return the new set
+     * @throws IllegalArgumentException if the initial capacity of
+     * elements is negative
+     * @since 1.8
+     */
+    public static <K> KeySetView<K,Boolean> newKeySet(int initialCapacity) {
+        return new KeySetView<K,Boolean>
+                (new ConcurrentHashMapDebug(initialCapacity), Boolean.TRUE);
+    }
+
+    /**
+     * Returns a {@link Set} view of the keys in this map, using the
+     * given common mapped value for any additions (i.e., {@link
+     * Collection#add} and {@link Collection#addAll(Collection)}).
+     * This is of course only appropriate if it is acceptable to use
+     * the same value for all additions from this view.
+     *
+     * @param mappedValue the mapped value to use for any additions
+     * @return the set view
+     * @throws NullPointerException if the mappedValue is null
+     */
+    public KeySetView<K,V> keySet(V mappedValue) {
+        if (mappedValue == null)
+            throw new NullPointerException();
+        return new KeySetView<K,V>(this, mappedValue);
+    }
+
+
     /* ---------------- Table Initialization and Resizing -------------- */
 
     /**
@@ -1380,15 +1466,19 @@ public class ConcurrentHashMapDebug<K, V> extends AbstractMap<K, V>
         Node<K, V>[] tab;
         int sc;
         while ((tab = table) == null || tab.length == 0) {
+
             if ((sc = sizeCtl) < 0)
+                //正在被其他线程抢了初始化的操作,则直接让出自己的cpu时间片
                 Thread.yield(); // lost initialization race; just spin
             else if (U.compareAndSwapInt(this, SIZECTL, sc, -1)) {
+                //通过cas操作让sizectl=-1,标识当前线程抢到了初始化资格
                 try {
                     if ((tab = table) == null || tab.length == 0) {
                         int n = (sc > 0) ? sc : DEFAULT_CAPACITY;
                         @SuppressWarnings("unchecked")
                         Node<K, V>[] nt = (Node<K, V>[]) new Node<?, ?>[n];
                         table = tab = nt;
+                        //计算下次扩容的大小,使用了右移计算
                         sc = n - (n >>> 2);
                     }
                 } finally {
@@ -1484,6 +1574,7 @@ public class ConcurrentHashMapDebug<K, V> extends AbstractMap<K, V>
         int c = (size >= (MAXIMUM_CAPACITY >>> 1)) ? MAXIMUM_CAPACITY :
                 tableSizeFor(size + (size >>> 1) + 1);
         int sc;
+        //如果sizeCtl < 0 ，说明有其他线程正在扩容当中，结束该方法
         while ((sc = sizeCtl) >= 0) {
             Node<K, V>[] tab = table;
             int n;
@@ -1495,9 +1586,10 @@ public class ConcurrentHashMapDebug<K, V> extends AbstractMap<K, V>
                             @SuppressWarnings("unchecked")
                             Node<K, V>[] nt = (Node<K, V>[]) new Node<?, ?>[n];
                             table = nt;
-                            sc = n - (n >>> 2);
+                            sc = n - (n >>> 2);//相当于3/4
                         }
                     } finally {
+                        //初始化完成后 sizeCtl 用于记录当前集合的负载容量值，也就是触发集合扩容的阈值
                         sizeCtl = sc;
                     }
                 }
@@ -1777,6 +1869,7 @@ public class ConcurrentHashMapDebug<K, V> extends AbstractMap<K, V>
         int n, sc;
         if (tab != null) {
             if ((n = tab.length) < MIN_TREEIFY_CAPACITY)
+                //扩容不转树
                 tryPresize(n << 1);
             else if ((b = tabAt(tab, index)) != null && b.hash >= 0) {
                 synchronized (b) {
@@ -2889,6 +2982,58 @@ public class ConcurrentHashMapDebug<K, V> extends AbstractMap<K, V>
         public abstract boolean remove(Object o);
 
         private static final String oomeMsg = "Required array size too large";
+
+        public final Object[] toArray() {
+            long sz = map.mappingCount();
+            if (sz > MAX_ARRAY_SIZE)
+                throw new OutOfMemoryError(oomeMsg);
+            int n = (int)sz;
+            Object[] r = new Object[n];
+            int i = 0;
+            for (E e : this) {
+                if (i == n) {
+                    if (n >= MAX_ARRAY_SIZE)
+                        throw new OutOfMemoryError(oomeMsg);
+                    if (n >= MAX_ARRAY_SIZE - (MAX_ARRAY_SIZE >>> 1) - 1)
+                        n = MAX_ARRAY_SIZE;
+                    else
+                        n += (n >>> 1) + 1;
+                    r = Arrays.copyOf(r, n);
+                }
+                r[i++] = e;
+            }
+            return (i == n) ? r : Arrays.copyOf(r, i);
+        }
+
+        @SuppressWarnings("unchecked")
+        public final <T> T[] toArray(T[] a) {
+            long sz = map.mappingCount();
+            if (sz > MAX_ARRAY_SIZE)
+                throw new OutOfMemoryError(oomeMsg);
+            int m = (int)sz;
+            T[] r = (a.length >= m) ? a :
+                    (T[])java.lang.reflect.Array
+                            .newInstance(a.getClass().getComponentType(), m);
+            int n = r.length;
+            int i = 0;
+            for (E e : this) {
+                if (i == n) {
+                    if (n >= MAX_ARRAY_SIZE)
+                        throw new OutOfMemoryError(oomeMsg);
+                    if (n >= MAX_ARRAY_SIZE - (MAX_ARRAY_SIZE >>> 1) - 1)
+                        n = MAX_ARRAY_SIZE;
+                    else
+                        n += (n >>> 1) + 1;
+                    r = Arrays.copyOf(r, n);
+                }
+                r[i++] = (T)e;
+            }
+            if (a == r && i < n) {
+                r[i] = null; // null-terminate
+                return r;
+            }
+            return (i == n) ? r : Arrays.copyOf(r, i);
+        }
 
         /**
          * Returns a string representation of this collection.
