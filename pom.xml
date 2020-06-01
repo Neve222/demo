@@ -31,12 +31,6 @@
       <scope>test</scope>
     </dependency>
 
-    <!--db驱动-->
-    <dependency>
-      <groupId>org.postgresql</groupId>
-      <artifactId>postgresql</artifactId>
-      <version>42.2.2</version>
-    </dependency>
     <!--mybatis-->
     <dependency>
       <groupId>org.mybatis</groupId>
@@ -114,6 +108,14 @@
                 <configurationFile>src/main/resources/autogen/generatorConfig_report.xml</configurationFile>
               </configuration>
             </plugin>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+                <source>8</source>
+                <target>8</target>
+            </configuration>
+        </plugin>
     </plugins>
   </build>
 </project>
