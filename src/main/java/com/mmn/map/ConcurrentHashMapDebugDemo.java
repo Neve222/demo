@@ -1,12 +1,19 @@
 package com.mmn.map;
 
+import java.util.HashMap;
+
+/**
+ * 入口
+ */
 public class ConcurrentHashMapDebugDemo {
 
     public static void main(String[] args) {
-//        ConcurrentHashMapDebug hashMap = new ConcurrentHashMapDebug();
-//        hashMap.put(1, 2);
-//        System.out.println(1);
+        ConcurrentHashMapDebug hashMap = new ConcurrentHashMapDebug();
 
-        System.out.println(16 + (16 >>> 1) + 1);
+        hashMap.putAll(new ConcurrentHashMapDebug());
+        hashMap.put(1, 2);
+
+        new HashMap();
+
     }
 }
