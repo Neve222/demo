@@ -539,7 +539,7 @@ public class ConcurrentHashMapDebug<K, V> extends AbstractMap<K, V>
         Node<K, V> e, p;
         int n, eh;
         K ek;
-        int h = spread(key.hashCode());//计算hash值
+        int h = spread(key.hashCode());//计算hash值索引
         if ((tab = table) != null && (n = tab.length) > 0 &&
                 (e = tabAt(tab, (n - 1) & h)) != null) {//读取首节点的Node元素
             if ((eh = e.hash) == h) {
